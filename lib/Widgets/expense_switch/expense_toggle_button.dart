@@ -8,7 +8,7 @@ class ExpenseToggleButton extends StatelessWidget {
   @override
   Widget build(context) {
     return SizedBox(
-      width: 115,
+      width: 180,
       child: Text(
         label,
         textAlign: TextAlign.center,

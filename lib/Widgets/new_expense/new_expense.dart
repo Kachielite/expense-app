@@ -10,11 +10,18 @@ import '../feedback/Alert.dart';
 import 'form_components/dropdown_field.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense(this.onSave, {super.key, required this.mode, this.expense});
+  const NewExpense(this.onSave,
+      {super.key,
+      required this.mode,
+      this.expense,
+      this.display,
+      this.onItemTapped});
 
   final void Function(ExpenseModel expense) onSave;
   final String mode;
   final ExpenseModel? expense;
+  final String? display;
+  final void Function(int index)? onItemTapped;
 
   @override
   State<NewExpense> createState() {
@@ -100,14 +107,37 @@ class _NewExpenseState extends State<NewExpense> {
         selectedDate,
       );
       widget.onSave(expense);
-      Navigator.pop(context);
+      if (widget.display == 'screen') {
+        widget.onItemTapped!(0);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('New expense added!')));
+      } else {
+        Navigator.pop(context);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget title = const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Text(
+        'Add new expense',
+        textAlign: TextAlign.left,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+    );
+
+    if (widget.display == 'screen') {
+      title = const SizedBox();
+    }
+
     return Container(
-      height: MediaQuery.of(context).size.height * 0.9, // 80% of screen height
+      // 80% of screen height
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: const BoxDecoration(
         color: Color.fromRGBO(16, 38, 50, 1),
@@ -118,18 +148,7 @@ class _NewExpenseState extends State<NewExpense> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Text(
-              'Add new expense',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ),
+          title,
           InputField(
             inputController: titleController,
             label: 'Title',

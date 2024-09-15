@@ -6,16 +6,17 @@ import 'chart_data.dart';
 import 'expense_type_data.dart';
 
 class Chart extends StatelessWidget {
-  const Chart({
-    super.key,
-    required this.filter,
-    required this.incomeType,
-    required this.expenseType,
-  });
+  const Chart(
+      {super.key,
+      required this.filter,
+      required this.incomeType,
+      required this.expenseType,
+      this.screenName});
 
   final String filter;
   final List<ExpenseModel> incomeType;
   final List<ExpenseModel> expenseType;
+  final String? screenName;
 
   @override
   Widget build(context) {
@@ -30,14 +31,19 @@ class Chart extends StatelessWidget {
     List<PieChartSectionData> currentSections = getSectionData(
         MediaQuery.of(context).size.width, totalIncome, totalExpense);
 
-    if (filter == 'INCOME') {
-      currentSections = getExpenseTypeSectionData(
-          MediaQuery.of(context).size.width, balance, incomeType);
-    }
+    if (screenName == 'home') {
+      currentSections = getSectionData(
+          MediaQuery.of(context).size.width, totalIncome, totalExpense);
+    } else {
+      if (filter == 'INCOME') {
+        currentSections = getExpenseTypeSectionData(
+            MediaQuery.of(context).size.width, balance, incomeType);
+      }
 
-    if (filter == 'EXPENSE') {
-      currentSections = getExpenseTypeSectionData(
-          MediaQuery.of(context).size.width, balance, expenseType);
+      if (filter == 'EXPENSE') {
+        currentSections = getExpenseTypeSectionData(
+            MediaQuery.of(context).size.width, balance, expenseType);
+      }
     }
 
     return PieChart(PieChartData(

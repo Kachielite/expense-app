@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 List<PieChartSectionData> getSectionData(
     double screenWidth, totalIncome, totalExpense) {
-  double radius = screenWidth / 4;
+  double radius = screenWidth / 4.8;
   // Calculate total amount and percentages
   final double total = totalIncome + totalExpense;
   final double incomePercentage = (totalIncome / total) * 100;

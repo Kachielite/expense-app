@@ -1,12 +1,14 @@
 import 'package:daily_expense/Widgets/expense_switch/expense_toggle_button.dart';
 import 'package:flutter/material.dart';
 
-const List<String> _expenseTypes = ['ALL', 'INCOME', 'EXPENSE'];
+const List<String> _expenseTypes = ['INCOME', 'EXPENSE'];
 
 class ExpenseToggleButtons extends StatefulWidget {
-  const ExpenseToggleButtons(this.onSelectExpenseType, {super.key});
+  const ExpenseToggleButtons(this.onSelectExpenseType, this.activeFilter,
+      {super.key});
 
   final void Function(String) onSelectExpenseType;
+  final String activeFilter;
 
   @override
   State<ExpenseToggleButtons> createState() {
@@ -15,11 +17,14 @@ class ExpenseToggleButtons extends StatefulWidget {
 }
 
 class _ExpenseToggleButtonsState extends State<ExpenseToggleButtons> {
-  final List<bool> selectedType = [true, false, false];
-
   @override
   Widget build(context) {
+    final List<bool> selectedType = [
+      widget.activeFilter == 'INCOME',
+      widget.activeFilter == 'EXPENSE'
+    ];
     return Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
         decoration: const BoxDecoration(
           color: Colors.white,
