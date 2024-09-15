@@ -8,17 +8,20 @@ import 'package:flutter/material.dart';
 import '../enums/expense_type.dart';
 
 class Home extends StatelessWidget {
-  const Home(
-      {super.key,
-      required this.onAdd,
-      required this.activeFilter,
-      required this.onDelete,
-      required this.onEdit});
+  const Home({
+    super.key,
+    required this.onAdd,
+    required this.activeFilter,
+    required this.onDelete,
+    required this.onEdit,
+    required this.onItemTapped,
+  });
 
   final String activeFilter;
   final void Function() onAdd;
   final void Function(ExpenseModel expense) onDelete;
   final void Function(ExpenseModel expense) onEdit;
+  final void Function(int index) onItemTapped;
 
   @override
   Widget build(context) {
@@ -87,7 +90,9 @@ class Home extends StatelessWidget {
                 ),
                 const Spacer(),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      onItemTapped(1);
+                    },
                     child: const Text(
                       'See all',
                       style: TextStyle(color: Colors.white, fontSize: 14),

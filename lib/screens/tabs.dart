@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import '../Widgets/new_expense/new_expense.dart';
 import '../data/my_expenses.dart';
 import '../model/expense_model.dart';
-import 'home.dart'; // Make sure you have corresponding widgets for each tab
+import 'home.dart';
+import 'new_expense.dart'; // Make sure you have corresponding widgets for each tab
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -23,7 +24,7 @@ class _TabsScreenState extends State<TabsScreen> {
   late List<ExpenseModel> filteredExpense;
   late List<PieChartSectionData> chartData;
 
-  String activeFilter = 'INCOME';
+  String activeFilter = 'EXPENSE';
   late int expenseIndex;
 
   void onSelectExpenseType(String type) {
@@ -107,6 +108,7 @@ class _TabsScreenState extends State<TabsScreen> {
         activeFilter: activeFilter,
         onEdit: onEdit,
         onDelete: onDelete,
+        onItemTapped: _onItemTapped,
       ), // Home widget
       ExpressScreen(
         onEdit: onEdit,
@@ -115,9 +117,9 @@ class _TabsScreenState extends State<TabsScreen> {
         activeFilter: activeFilter,
       ), // Add your widget for Expense
       const Text('Wallet Screen'),
-      NewExpense(onSave,
-          mode:
-              'New') // Add your widget for Wallet// Add your widget for the new tab
+      NewExpenseScreen(
+          onSave:
+              onSave) // Add your widget for Wallet// Add your widget for the new tab
     ];
     return Scaffold(
       body: pages[_selectedIndex], // Display the selected page
