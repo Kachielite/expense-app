@@ -11,12 +11,17 @@ import 'form_components/dropdown_field.dart';
 
 class NewExpense extends StatefulWidget {
   const NewExpense(this.onSave,
-      {super.key, required this.mode, this.expense, this.display});
+      {super.key,
+      required this.mode,
+      this.expense,
+      this.display,
+      this.onItemTapped});
 
   final void Function(ExpenseModel expense) onSave;
   final String mode;
   final ExpenseModel? expense;
   final String? display;
+  final void Function(int index)? onItemTapped;
 
   @override
   State<NewExpense> createState() {
@@ -102,7 +107,13 @@ class _NewExpenseState extends State<NewExpense> {
         selectedDate,
       );
       widget.onSave(expense);
-      Navigator.pop(context);
+      if (widget.display == 'screen') {
+        widget.onItemTapped!(0);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('New expense added!')));
+      } else {
+        Navigator.pop(context);
+      }
     }
   }
 

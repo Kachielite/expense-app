@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../Widgets/new_expense/new_expense.dart';
 import '../data/my_expenses.dart';
 import '../model/expense_model.dart';
+import 'history.dart';
 import 'home.dart';
 import 'new_expense.dart'; // Make sure you have corresponding widgets for each tab
 
@@ -116,11 +117,13 @@ class _TabsScreenState extends State<TabsScreen> {
         onSelectExpenseType: onSelectExpenseType,
         activeFilter: activeFilter,
       ), // Add your widget for Expense
-      const Text('Wallet Screen'),
+      const HistoryScreen(),
       NewExpenseScreen(
-          onSave:
-              onSave) // Add your widget for Wallet// Add your widget for the new tab
+        onSave: onSave,
+        onItemTapped: _onItemTapped,
+      ) // Add your widget for Wallet// Add your widget for the new tab
     ];
+
     return Scaffold(
       body: pages[_selectedIndex], // Display the selected page
       bottomNavigationBar: BottomNavigationBar(
@@ -138,8 +141,7 @@ class _TabsScreenState extends State<TabsScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.area_chart_sharp), label: 'Expense'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet_outlined),
-              label: 'Wallet'),
+              icon: Icon(Icons.history_outlined), label: 'History'),
           BottomNavigationBarItem(
               icon: Icon(Icons.add_box_outlined), label: 'Add'),
         ],
