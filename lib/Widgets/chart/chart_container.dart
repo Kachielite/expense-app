@@ -6,27 +6,32 @@ import '../../model/expense_model.dart';
 import 'chart.dart';
 
 class ChartContainer extends StatelessWidget {
-  const ChartContainer({
-    super.key,
-    required this.filter,
-    required this.incomeType,
-    required this.expenseType,
-  });
+  const ChartContainer(
+      {super.key,
+      required this.filter,
+      required this.incomeType,
+      required this.expenseType,
+      this.screenName});
 
   final String filter;
   final List<ExpenseModel> incomeType;
   final List<ExpenseModel> expenseType;
+  final String? screenName;
 
   @override
   Widget build(context) {
     Widget currentChartLabel = const ChartLabel();
 
-    if (filter == "INCOME") {
-      currentChartLabel = ChartExpenseLabel(expenseType: incomeType);
-    }
+    if (screenName == 'home') {
+      currentChartLabel = const ChartLabel();
+    } else {
+      if (filter == "INCOME") {
+        currentChartLabel = ChartExpenseLabel(expenseType: incomeType);
+      }
 
-    if (filter == "EXPENSE") {
-      currentChartLabel = ChartExpenseLabel(expenseType: expenseType);
+      if (filter == "EXPENSE") {
+        currentChartLabel = ChartExpenseLabel(expenseType: expenseType);
+      }
     }
 
     return Container(
@@ -38,10 +43,10 @@ class ChartContainer extends StatelessWidget {
         children: [
           Expanded(
               child: Chart(
-            filter: filter,
-            incomeType: incomeType,
-            expenseType: expenseType,
-          )),
+                  filter: filter,
+                  incomeType: incomeType,
+                  expenseType: expenseType,
+                  screenName: screenName)),
           currentChartLabel
         ],
       ),

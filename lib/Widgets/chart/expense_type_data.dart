@@ -6,7 +6,7 @@ import '../../model/expense_model.dart';
 
 List<PieChartSectionData> getExpenseTypeSectionData(
     double screenWidth, double totalSum, List<ExpenseModel> expenses) {
-  double radius = screenWidth / 4;
+  double radius = screenWidth / 4.8;
 
   double getValue(double total, double expenseAmount) {
     return ((expenseAmount / total) * 100).roundToDouble();

@@ -1,6 +1,11 @@
+import 'package:daily_expense/screens/expense.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../Widgets/home.dart'; // Make sure you have corresponding widgets for each tab
+import '../Widgets/new_expense/new_expense.dart';
+import '../data/my_expenses.dart';
+import '../model/expense_model.dart';
+import 'home.dart'; // Make sure you have corresponding widgets for each tab
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -14,13 +19,77 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedIndex = 0; // Track the selected index
 
-  // A list of widgets corresponding to each tab
-  final List<Widget> _pages = [
-    const Home(), // Home widget
-    const Text('Expense Screen'), // Add your widget for Expense
-    const Text(
-        'Wallet Screen'), // Add your widget for Wallet// Add your widget for the new tab
-  ];
+  final List<ExpenseModel> expenseList = myExpenses;
+  late List<ExpenseModel> filteredExpense;
+  late List<PieChartSectionData> chartData;
+
+  String activeFilter = 'INCOME';
+  late int expenseIndex;
+
+  void onSelectExpenseType(String type) {
+    setState(() {
+      activeFilter = type;
+    });
+  }
+
+  void onSave(ExpenseModel expense) {
+    setState(() {
+      myExpenses.insert(0, expense);
+    });
+  }
+
+  void onUpdate(ExpenseModel expense) {
+    expenseList.removeAt(expenseIndex);
+    setState(() {
+      myExpenses.insert(expenseIndex, expense);
+    });
+  }
+
+  void onAdd() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (ctx) => NewExpense(
+              onSave,
+              mode: 'new',
+            ));
+  }
+
+  void onEdit(ExpenseModel expense) {
+    expenseIndex = myExpenses.indexOf(expense);
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (ctx) => NewExpense(
+              onUpdate,
+              mode: 'edit',
+              expense: expense,
+            ));
+  }
+
+  void onDelete(ExpenseModel expense) {
+    int expenseIndex = expenseList.indexOf(expense);
+
+    setState(() {
+      expenseList.remove(expense);
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(seconds: 3),
+      content: const Text(
+        "Item deleted",
+        style: TextStyle(color: Colors.white),
+      ),
+      action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              expenseList.insert(expenseIndex, expense);
+            });
+          }),
+    ));
+  }
 
   // Function to update the selected index when a tab is tapped
   void _onItemTapped(int index) {
@@ -31,8 +100,27 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // A list of widgets corresponding to each tab
+    final List<Widget> pages = [
+      Home(
+        onAdd: onAdd,
+        activeFilter: activeFilter,
+        onEdit: onEdit,
+        onDelete: onDelete,
+      ), // Home widget
+      ExpressScreen(
+        onEdit: onEdit,
+        onDelete: onDelete,
+        onSelectExpenseType: onSelectExpenseType,
+        activeFilter: activeFilter,
+      ), // Add your widget for Expense
+      const Text('Wallet Screen'),
+      NewExpense(onSave,
+          mode:
+              'New') // Add your widget for Wallet// Add your widget for the new tab
+    ];
     return Scaffold(
-      body: _pages[_selectedIndex], // Display the selected page
+      body: pages[_selectedIndex], // Display the selected page
       bottomNavigationBar: BottomNavigationBar(
         iconSize: 30,
         currentIndex: _selectedIndex, // Set the selected index
