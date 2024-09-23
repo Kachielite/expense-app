@@ -1,35 +1,30 @@
 import 'package:daily_expense/Widgets/chart/chart_container.dart';
 import 'package:daily_expense/Widgets/expense/expense_items.dart';
 import 'package:daily_expense/Widgets/total_expense/total_expense.dart';
-import 'package:daily_expense/data/my_expenses.dart';
 import 'package:daily_expense/model/expense_model.dart';
+import 'package:daily_expense/providers/expense_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../enums/expense_type.dart';
 
-class Home extends StatelessWidget {
-  const Home({
-    super.key,
-    required this.onAdd,
-    required this.activeFilter,
-    required this.onDelete,
-    required this.onEdit,
-    required this.onItemTapped,
-  });
+class Home extends ConsumerWidget {
+  const Home(
+      {super.key, required this.onItemTapped, required this.activeFilter});
 
   final String activeFilter;
-  final void Function() onAdd;
-  final void Function(ExpenseModel expense) onDelete;
-  final void Function(ExpenseModel expense) onEdit;
   final void Function(int index) onItemTapped;
 
   @override
-  Widget build(context) {
-    List<ExpenseModel> incomeExpensesType = myExpenses
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allExpenses = ref.watch(expenseProvider);
+    final expenseMethods = ref.read(expenseProvider.notifier);
+
+    List<ExpenseModel> incomeExpensesType = allExpenses
         .where((expense) => expense.type == ExpenseType.income)
         .toList();
 
-    List<ExpenseModel> expenseExpenseType = myExpenses
+    List<ExpenseModel> expenseExpenseType = allExpenses
         .where((expense) => expense.type == ExpenseType.expense)
         .toList();
 
@@ -54,7 +49,9 @@ class Home extends StatelessWidget {
                 fontWeight: FontWeight.w700)),
         actions: [
           IconButton(
-            onPressed: onAdd,
+            onPressed: () {
+              expenseMethods.onAdd(context);
+            },
             icon: const Icon(Icons.add),
             style: IconButton.styleFrom(foregroundColor: Colors.white),
           )
@@ -102,12 +99,7 @@ class Home extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
-            Expanded(
-                child: ExpenseItems(
-              myExpenses,
-              onDelete: onDelete,
-              onEdit: onEdit,
-            ))
+            const Expanded(child: ExpenseItems())
           ],
         ),
       ),

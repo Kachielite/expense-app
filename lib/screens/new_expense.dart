@@ -1,12 +1,9 @@
 import 'package:daily_expense/Widgets/new_expense/new_expense.dart';
-import 'package:daily_expense/model/expense_model.dart';
 import 'package:flutter/material.dart';
 
 class NewExpenseScreen extends StatelessWidget {
-  const NewExpenseScreen(
-      {super.key, required this.onSave, required this.onItemTapped});
+  const NewExpenseScreen({super.key, required this.onItemTapped});
 
-  final void Function(ExpenseModel expense) onSave;
   final void Function(int index) onItemTapped;
 
   @override
@@ -22,7 +19,7 @@ class NewExpenseScreen extends StatelessWidget {
                 fontWeight: FontWeight.w700)),
       ),
       body: SingleChildScrollView(
-          child: NewExpense(onSave,
+          child: NewExpense(
               mode: "New", display: 'screen', onItemTapped: onItemTapped)),
     );
   }

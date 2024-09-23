@@ -2,35 +2,34 @@ import 'package:daily_expense/Widgets/new_expense/form_components/datepicker_fie
 import 'package:daily_expense/Widgets/new_expense/form_components/input_field.dart';
 import 'package:daily_expense/enums/categories.dart';
 import 'package:daily_expense/model/expense_model.dart';
+import 'package:daily_expense/providers/expense_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/my_expenses.dart';
 import '../../enums/expense_type.dart';
 import '../feedback/Alert.dart';
 import 'form_components/dropdown_field.dart';
 
-class NewExpense extends StatefulWidget {
-  const NewExpense(this.onSave,
+class NewExpense extends ConsumerStatefulWidget {
+  const NewExpense(
       {super.key,
       required this.mode,
       this.expense,
       this.display,
       this.onItemTapped});
 
-  final void Function(ExpenseModel expense) onSave;
   final String mode;
   final ExpenseModel? expense;
   final String? display;
   final void Function(int index)? onItemTapped;
 
   @override
-  State<NewExpense> createState() {
+  ConsumerState<NewExpense> createState() {
     return _NewExpenseState();
   }
 }
 
-class _NewExpenseState extends State<NewExpense> {
-  final List<ExpenseModel> expenseList = myExpenses;
+class _NewExpenseState extends ConsumerState<NewExpense> {
   late final ExpenseModel expense;
   late final String mode;
 
@@ -106,7 +105,11 @@ class _NewExpenseState extends State<NewExpense> {
         selectedType,
         selectedDate,
       );
-      widget.onSave(expense);
+
+      List<ExpenseModel> allExpenses = ref.watch(expenseProvider);
+      mode == "new"
+          ? ref.read(expenseProvider.notifier).onSave(expense)
+          : ref.read(expenseProvider.notifier).onUpdate(expense);
       if (widget.display == 'screen') {
         widget.onItemTapped!(0);
         ScaffoldMessenger.of(context)

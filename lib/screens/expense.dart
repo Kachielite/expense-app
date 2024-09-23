@@ -1,44 +1,33 @@
+import 'package:daily_expense/providers/expense_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../Widgets/chart/chart_container.dart';
 import '../Widgets/expense/expense_items.dart';
 import '../Widgets/expense_switch/expense_toggle_buttons.dart';
-import '../data/my_expenses.dart';
 import '../enums/expense_type.dart';
 import '../model/expense_model.dart';
 
-class ExpressScreen extends StatelessWidget {
+class ExpressScreen extends ConsumerWidget {
   const ExpressScreen({
     super.key,
     required this.activeFilter,
-    required this.onDelete,
-    required this.onEdit,
     required this.onSelectExpenseType,
   });
 
   final String activeFilter;
-  final void Function(ExpenseModel expense) onDelete;
-  final void Function(ExpenseModel expense) onEdit;
   final void Function(String type) onSelectExpenseType;
 
   @override
-  Widget build(context) {
-    List<ExpenseModel> filteredExpense = [];
-    List<ExpenseModel> incomeExpensesType = myExpenses
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<ExpenseModel> allExpenses = ref.watch(expenseProvider);
+    List<ExpenseModel> incomeExpensesType = allExpenses
         .where((expense) => expense.type == ExpenseType.income)
         .toList();
 
-    List<ExpenseModel> expenseExpenseType = myExpenses
+    List<ExpenseModel> expenseExpenseType = allExpenses
         .where((expense) => expense.type == ExpenseType.expense)
         .toList();
-
-    if (activeFilter == 'INCOME') {
-      filteredExpense =
-          myExpenses.where((e) => e.type == ExpenseType.income).toList();
-    } else {
-      filteredExpense =
-          myExpenses.where((e) => e.type == ExpenseType.expense).toList();
-    }
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(16, 38, 50, 1),
@@ -69,12 +58,7 @@ class ExpressScreen extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
-            Expanded(
-                child: ExpenseItems(
-              filteredExpense,
-              onDelete: onDelete,
-              onEdit: onEdit,
-            ))
+            Expanded(child: ExpenseItems(activeFilter: activeFilter))
           ],
         ),
       ),
